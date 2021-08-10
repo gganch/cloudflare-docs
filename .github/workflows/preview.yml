@@ -109,6 +109,7 @@ jobs:
           echo preivew $PREVIEW_ACCOUNT_ID
           echo github ${GITHUB_WORKSPACE}
           echo prnumber $PRNUMBER
+          echo environment! $ENVIRONMENT
           export WRANGLER_HOME="$HOME"
           mkdir -p "$HOME/.wrangler"
           chmod -R 770 "$HOME/.wrangler"
@@ -122,8 +123,6 @@ jobs:
                 cp wrangler.toml ${GITHUB_WORKSPACE}/
                 COPIED=true
               fi
-              ${GITHUB_WORKSPACE}/.github/setup_preview.sh ${{ format(github.event.number) }} $tile 09e1897acd19314fc6df7d21108729b0
-              wrangler publish -e $ENVIRONMENT
               popd
             else
               pushd products/$tile
@@ -131,8 +130,7 @@ jobs:
                 cp wrangler.toml ${GITHUB_WORKSPACE}/
                 COPIED=true
               fi
-              ${GITHUB_WORKSPACE}/.github/setup_preview.sh ${{ format(github.event.number) }} $tile 09e1897acd19314fc6df7d21108729b0
-              wrangler publish -e $ENVIRONMENT
+              wrangler publish
               popd
             fi
           done < <(echo ${{ steps.filter.outputs.products_files }} | node ./get-products-from-file-paths.js)
